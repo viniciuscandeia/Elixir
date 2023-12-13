@@ -18,6 +18,7 @@ defmodule Lasagna do
     tempoForno + preparation_time_in_minutes(camadas)
   end
 
+  # Informar que a lasanha terminou
   def alarm do
     "Ding!"
   end
