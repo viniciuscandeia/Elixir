@@ -13,3 +13,8 @@ Enum.each(nova_lista, fn item -> IO.puts "Número: #{item}" end)
 
 
 # Resultado: [1, 2, 3, 4, 5]
+
+t1 = 1
+t2 = 2
+
+IO.puts "#{rem(t1, t2)}"
