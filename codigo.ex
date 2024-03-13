@@ -1,14 +1,5 @@
 
-# * Comum utilizar um contexto (módulo) para as funções
-# Leve semelhança a uma classe
-
 defmodule Modulo do
-  def saudacao(nome) do
-    "Olá, #{nome}!"
-  end
-  def despedida() do
-	"Tchau!"
-  end
 
   def insere_em_ordem([], elem), do: [elem]
   def insere_em_ordem([cabeca | cauda], elem) when cabeca < elem, do: [cabeca | insere_em_ordem(cauda, elem)]
@@ -17,12 +8,13 @@ defmodule Modulo do
   def sort([]), do: []
   def sort([cabeca | cauda]), do: insere_em_ordem(sort(cauda), cabeca)
 
-  def flatten([cabeca | cauda]) when is_list(x) do
-
-  end
-
+  def flatten([]), do: []
+  def flatten([head | tail]) when is_list(head), do: flatten(head) ++ flatten(tail)
+  def flatten([head | tail]), do: [head | flatten(tail)]
 
 end
 
-IO.puts Modulo.saudacao("Alícia")
-IO.puts Modulo.despedida()
+lista = [[1, 2], 0, [3, 4]]
+
+listaNova = Modulo.flatten(lista)
+Enum.each(listaNova, fn item -> IO.puts "Número: #{item}" end)
