@@ -13,7 +13,8 @@ defmodule Ativ5 do
   iex> Ativ5.map([1, 2, 3, 4, 5], fn x -> x * 2 end)
   [2, 4, 6, 8, 10]
   """
-  def map(l, f), do: nil
+  def map([], _), do: []
+  def map([head | tail], f), do: [f.(head) | map(tail, f)]
 
   @doc """
   Dada uma lista de strings, retorna uma lista com o tamanho de cada string.
@@ -23,7 +24,7 @@ defmodule Ativ5 do
   [3, 6, 7]
   """
   # Dica: use a funcao String.length para obter o tamanho de uma string
-  def tamanho_strings(ls), do: nil
+  def tamanho_strings(ls), do: map(ls, fn string -> String.length(string) end)
 
   @doc """
   Dada uma lista de strings contendo apenas dígitos numéricos, retorna uma
@@ -34,8 +35,7 @@ defmodule Ativ5 do
   [42, 54, 999]
   """
   # Dica: use a função String.to_integer para converter cada string
-  def converte_para_inteiros(l), do: nil
-
+  def converte_para_inteiros(l), do: map(l, fn string -> String.to_integer(string) end)
 
   @doc """
   Dada uma lista de números, retorna uma lista com cada número da lista
@@ -45,7 +45,7 @@ defmodule Ativ5 do
   iex> Ativ5.soma_100_lista([1, 2, 3, 4, 5])
   [101, 102, 103, 104, 105]
   """
-  def soma_100_lista(l), do: nil
+  def soma_100_lista(l), do: map(l, fn x -> x+100 end)
 
   # Existem situações em que queremos aplicar um deslocamento a todos os números
   # de uma coleção, por exemplo em aplicações de processamento de sinais ou de
@@ -60,7 +60,7 @@ defmodule Ativ5 do
   iex> Ativ5.soma_n_lista([1, 2, 3, 4, 5], 500)
   [501, 502, 503, 504, 505]
   """
-  def soma_n_lista(l, n), do: nil
+  def soma_n_lista(l, n), do: map(l, fn x -> x+n end)
 
   @doc """
   Dada uma lista de strings, adiciona um prefixo a cada string da lista,
@@ -70,7 +70,7 @@ defmodule Ativ5 do
   iex> Ativ5.adiciona_prefixo(["fazer", "tornar", "bater"], "re")
   ["refazer", "retornar", "rebater"]
   """
-  def adiciona_prefixo(l, pre), do: nil
+  def adiciona_prefixo(l, pre), do: map(l, fn str -> pre <> str end)
 
   @doc """
   Dada uma lista de strings, adiciona um sufixo a cada string da lista,
@@ -80,7 +80,7 @@ defmodule Ativ5 do
   iex> Ativ5.adiciona_sufixo(["geo", "bio", "crono"], "logia")
   ["geologia", "biologia", "cronologia"]
   """
-  def adiciona_sufixo(l, sufixo), do: nil
+  def adiciona_sufixo(l, sufixo), do: map(l, fn str -> str <> sufixo end)
 
 
   # --- Parte 2: Reduções (fold_left, fold_right) --------------------
@@ -94,7 +94,8 @@ defmodule Ativ5 do
   iex> Ativ5.fold_right([1, 2, 3, 4], 0, fn (x, s) -> x + s end)
   10
   """
-  def fold_right(l, ini, f), do: nil
+  def fold_right([], ini, _), do: ini
+  def fold_right([head | tail], ini, f), do: f.(head, fold_right(tail, ini, f))
 
   @doc """
   Dada uma lista de strings, retorna uma string que é a concatenação de todas
@@ -104,7 +105,7 @@ defmodule Ativ5 do
   iex> Ativ5.concatena_strings(["foo", "bar", "baz"])
   "foobarbaz"
   """
-  def concatena_strings(ls), do: nil
+  def concatena_strings(ls), do: fold_right(ls, "", fn (str1, str2) -> str1 <> str2 end)
 
   @doc """
   Dada uma lista de valores booleanos, calcula o AND (E-lógico) de todos os
@@ -114,7 +115,7 @@ defmodule Ativ5 do
   iex> Ativ5.and_lista([true, false, true])
   false
   """
-  def and_lista(lb), do: nil
+  def and_lista(lb), do: fold_right(lb, true, fn (boo1, boo2) -> boo1 and boo2 end)
 
   @doc """
   Dada uma lista de valores booleanos, calcula o OR (OU-lógico) de todos os
@@ -124,7 +125,8 @@ defmodule Ativ5 do
   iex> Ativ5.or_lista([true, false, true])
   true
   """
-  def or_lista(lb), do: nil
+  def or_lista(lb), do: fold_right(lb, false, fn (boo1, boo2) -> boo1 or boo2 end)
+
 
   # fold-right sempre associa a operação f à direita, e isso pode ser
   # inadequado em muitos casos. Usando o modelo de substituição, podemos
@@ -166,7 +168,8 @@ defmodule Ativ5 do
   iex> Ativ5.fold_left([10, 20, 40], 1000, fn (r, x) -> r - x end)
   930
   """
-  def fold_left(l, ini, f), do: nil
+  def fold_left([], ini, _), do: ini
+  def fold_left([head | tail], ini, f), do: f.(fold_left(tail, ini, f), head )
 
   @doc """
   Dada uma pontuação inicial e uma lista de deduções, calcula a pontuação
@@ -176,7 +179,7 @@ defmodule Ativ5 do
   iex> Ativ5.pontuacao_final(1000, [30, 40, 15])
   915
   """
-  def pontuacao_final(ini, deducoes), do: nil
+  def pontuacao_final(ini, deducoes), do: fold_left(deducoes, ini, fn (n1, n2) -> n1 - n2 end)
 
   @doc """
   Dada uma lista de listas, concatena todas as listas e retorna o resultado.
@@ -185,7 +188,7 @@ defmodule Ativ5 do
   iex> Ativ5.concatena_listas([[1, 2], [3, 4], [7, 8, 9]])
   [1, 2, 3, 4, 7, 8, 9]
   """
-  def concatena_listas(ll), do: nil
+  def concatena_listas(ll), do: fold_right(ll, [], fn (lista1, lista2) -> lista1++lista2 end)
   # Dica: o operador ++ concatena duas listas
 
   # Opcional: a funcao concatena_listas é mais eficiente se implementada com
@@ -204,7 +207,8 @@ defmodule Ativ5 do
   iex> Ativ5.concat_strings_sep(["tapioca", "cuscuz", "queijo"], ", ")
   "tapioca, cuscuz, queijo"
   """
-  def concat_strings_sep(ls, sep), do: nil
+  #def concat_strings_sep(ls, sep), do: fold_left(ls, sep, fn (str1, str2) -> str1<>sep<>str2 end)
+  def concat_strings_sep(ls, sep), do: Enum.join(ls, sep)
 
 
   # --- Parte 3: Filtragem -------------------------------------------
@@ -217,7 +221,14 @@ defmodule Ativ5 do
   iex> Ativ5.filter([1, 22, 3, 7, 16], fn n -> n > 10 end)
   [22, 16]
   """
-  def filter(l, pred), do: nil
+  def filter([], _pred), do: []
+  def filter([head | tail], pred) do
+    if pred.(head) == true do
+      [head | filter(tail, pred)]
+    else
+      filter(tail, pred)
+    end
+  end
 
   @doc """
   strings_que_contem(ls, meio) retorna apenas as strings da lista ls que contem
@@ -227,7 +238,7 @@ defmodule Ativ5 do
   iex> Ativ5.strings_que_contem(["foo", "euforia", "bar", "Moria", "tapioca"], "oria")
   ["euforia", "Moria"]
   """
-  def strings_que_contem(ls, meio), do: nil
+  def strings_que_contem(ls, meio), do: filter(ls, fn str -> String.contains?(str, meio) end)
   # Dica: use a função String.contains? para decidir se uma string contem outra
 
   @doc """
@@ -238,5 +249,6 @@ defmodule Ativ5 do
   iex> Ativ5.par_3n_mais_1([1, 2, 3, 4, 5])
   [1, 3, 5]
   """
-  def par_3n_mais_1(l), do: nil
+  def par_3n_mais_1(l), do: filter(l, fn n -> rem(3*n+1, 2) == 0  end)
+
 end
